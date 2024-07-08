@@ -1,0 +1,56 @@
+{
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "plugins": [
+    "react",
+    "react-refresh",
+    "react-compiler",
+    "prettier",
+    "import",
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "prettier",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:react/jsx-runtime"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "error",
+    "@typescript-eslint/no-explicit-any": "error",
+    "react-refresh/only-export-components": [
+      "warn",
+      { 
+        "allowConstantExport": true
+      }
+    ],
+    "react-compiler/react-compiler": "error",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ]
+  },
+  "noInlineConfig": true
+}

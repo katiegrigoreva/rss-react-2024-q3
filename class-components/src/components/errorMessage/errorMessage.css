@@ -1,0 +1,20 @@
+.errorMessage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1050;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(0, 0, 0, 0.6);
+}
+.errorMessage img { 
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
+  width: 350px;
+  height: 350px;
+  object-fit: contain;
+  margin: 0 auto
+}
