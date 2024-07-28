@@ -1,0 +1,18 @@
+.appContainer {
+  margin: 0 auto;
+  max-width: 80%;
+  min-width: 390px;
+}
+.searchPanel__btn {
+  width: 90px;
+  height: 30px;
+  border-radius: 5px;
+  font-size: 14px;
+  color: white;
+  background-color: rgb(255,0,0,0.8);
+  cursor: pointer;
+}
+
+.searchPanel__btn:hover {
+  background-color: rgb(255,0,0);
+}
