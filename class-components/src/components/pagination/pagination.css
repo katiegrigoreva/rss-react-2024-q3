@@ -23,11 +23,11 @@
   padding-top: 1px;
   border-radius: 4px;
   text-decoration: none;
-  color: black;
+  color: grey;
 }
 
 .active {
-  background-color: rgb(128,128,128,0.1);
+  background-color: lightgray;
   width: 22px;
   height: 22px;
 }

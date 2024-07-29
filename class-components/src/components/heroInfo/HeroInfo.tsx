@@ -1,55 +1,41 @@
-import { useState, useEffect, useRef } from 'react';
+import { useRef, useContext, useEffect } from 'react';
 import './heroInfo.css';
-import ApiConnector, { heroData } from '../../api/ApiConnector';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
 import { useLocation, useNavigate } from 'react-router';
+import { ThemeContext } from '../../context/ThemeContext';
+import { useGetHeroInfoQuery } from '../../api/apiSlice';
 
 const HeroInfo = () => {
-  const [heroInfo, setHeroInfo] = useState<heroData>();
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const myRef = useRef(0);
-  const apiConnector = new ApiConnector();
+  const context = useContext(ThemeContext);
 
   const indx = location.pathname.split('').findIndex((el) => el === ':');
   const id = location.pathname.slice(indx + 1);
 
+  const { data, isLoading, isFetching, isError } = useGetHeroInfoQuery(id, {
+    skip: id === '',
+  });
+
   useEffect(() => {
     myRef.current++;
-    if (id !== '') {
-      setLoading(true);
-      apiConnector
-        .getHeroInfo(id)
-        .then(onInfoLoaded)
-        .catch(onError)
-        .finally(() => setLoading(false));
-    }
   }, [id]);
 
   const onClose = () => {
     navigate(-myRef.current);
   };
 
-  const onError = () => {
-    setError(true);
-  };
-
-  const onInfoLoaded = (data: heroData) => {
-    window.scrollTo(0, 0);
-    setHeroInfo(() => data);
-  };
-
-  const errorMsg = error ? <ErrorMessage /> : null;
-  const spinner = loading ? <Spinner /> : null;
+  const errorMsg = isError ? <ErrorMessage /> : null;
+  const spinner = isLoading || isFetching ? <Spinner /> : null;
+  const heroInfo = data?.heroInfo;
 
   return (
-    <div className="heroInfo">
+    <div className={`heroInfo heroInfo_${context.theme}`}>
       {spinner}
       {errorMsg}
-      <img className="heroInfo__close" src="../../../assets/close.png" alt="close" onClick={onClose} />
+      <img className="heroInfo__close" src="../../../assets/close-red.png" alt="close" onClick={onClose} />
       <img className="heroInfo__img" src={heroInfo?.img} alt={heroInfo?.name} />
       <div>
         <div className="heroInfo__name">

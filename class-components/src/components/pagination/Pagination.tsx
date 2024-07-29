@@ -2,13 +2,13 @@ import { Link } from 'react-router-dom';
 import './pagination.css';
 
 type paginationProps = {
-  heroesPerPage: number;
   totalHeroes: number;
-  onChangePage: () => void;
+  onChangePage: (arg: string) => void;
 };
 
-const Pagination = ({ heroesPerPage, totalHeroes, onChangePage }: paginationProps) => {
+const Pagination = ({ totalHeroes, onChangePage }: paginationProps) => {
   const pageNumbers = [];
+  const heroesPerPage: number = 8;
   const offset = new URLSearchParams(location.search).get('offset');
   const offsetToUse = offset ? offset : '0';
 
@@ -23,7 +23,7 @@ const Pagination = ({ heroesPerPage, totalHeroes, onChangePage }: paginationProp
           className="pagination__item"
           key={pageNum}
           onClick={() => {
-            onChangePage();
+            onChangePage(location.search);
           }}
         >
           <Link

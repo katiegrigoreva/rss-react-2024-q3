@@ -1,0 +1,14 @@
+.flyout {
+  position: sticky;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  width: 320px;
+  height: 70px;
+  border-radius: 5px;
+  background-color: rgb(176, 173, 173);
+}

@@ -11,3 +11,8 @@
   border-radius: 5px;
   font-size: 14px;
 }
+
+.searchPanel__input_dark {
+  background-color: rgb(55, 55, 55);
+  color: white;
+}

@@ -12,6 +12,7 @@
  
 }
 .hero__item {
+  position: relative;
   width: 200px;
   height: 318px;
   background-color: black;
@@ -21,6 +22,11 @@
   overflow: hidden;
   transition: all 0.3s;
 }
+
+.hero__item_dark {
+  border: 0.5px solid rgb(55, 55, 55);
+}
+
 .hero__item:hover {
   transition: all 0.3s;
   scale: 1.05;
@@ -41,4 +47,10 @@
 .hero__descr {
   font-size: 10px;
   color: white;
+}
+.checkbox {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background-color: red;
 }

@@ -1,86 +1,64 @@
-import { useState, useEffect } from 'react';
-import ApiConnector, { heroData } from '../../api/ApiConnector';
+import { useState, useContext, useEffect, BaseSyntheticEvent } from 'react';
 import './heroesList.css';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Pagination from '../pagination/Pagination';
-import { apiConstants } from '../../api/apiConstants';
 import { Outlet, useNavigate } from 'react-router';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { ThemeContext } from '../../context/ThemeContext';
+import { useGetAllHeroesQuery, heroData } from '../../api/apiSlice';
+import { getTransformedData } from '../../helpers/getTransformedData';
+import { apiConstants } from '../../api/apiConstants';
+import { Flyout } from '../flyout/Flyout';
 
-type HeroesListProps = {
+export type HeroesListProps = {
   heroesList: heroData[];
   totalHeroes: number;
 };
 
 const HeroesList = (props: HeroesListProps) => {
-  const [heroesList, setHeroesList] = useState<heroData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [heroesPerPage] = useState(8);
-  const [totalHeroes, setTotalHeroes] = useState(0);
-  const [localStorageValue] = useLocalStorage('searchTerm', '');
+  const [query, setQuery] = useState(apiConstants._baseQuery);
   const navigate = useNavigate();
-  const maxTotalHeroes: number = 100;
-  const apiConnector = new ApiConnector();
+  const context = useContext(ThemeContext);
+  const { data, isLoading, isFetching, isError } = useGetAllHeroesQuery(query);
 
   useEffect(() => {
-    getHeroesList(apiConstants._baseQuery);
+    localStorage.removeItem('searchTerm');
+    navigate('/');
   }, []);
 
-  useEffect(() => {
-    onListLoaded(props.heroesList);
-    setTotalHeroes(0);
-  }, [props.heroesList]);
-
-  const getHeroesList = (query: string) => {
-    setLoading(() => true);
-
-    if (localStorageValue) {
-      /* const term = localStorage.getItem('searchTerm');
-      const termToUse = term ? term : ''; */
-      apiConnector
-        .getSearchData(localStorageValue, query)
-        .then((data) => {
-          onListLoaded(data.heroesList);
-          setTotalHeroes(data.totalHeroes);
-        })
-        .catch(onError)
-        .finally(() => {
-          setLoading(false);
-        });
-    } else {
-      apiConnector
-        .getAllHeroes(query)
-        .then((data: HeroesListProps) => {
-          onListLoaded(data.heroesList);
-          setTotalHeroes(data.totalHeroes < maxTotalHeroes ? data.totalHeroes : maxTotalHeroes);
-        })
-        .catch(onError)
-        .finally(() => {
-          setLoading(() => false);
-        });
+  const changePage = (searchQuery: string) => {
+    if (localStorage.getItem('searchTerm') === '' || localStorage.getItem('searchTerm') === null) {
+      setQuery(searchQuery);
     }
   };
-
-  const onListLoaded = (newHeroesList: heroData[]) => {
-    setHeroesList(() => newHeroesList);
-  };
-
-  const onError = () => {
-    setError(true);
-  };
+  const [isFlyout, setIsFlyout] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<number>(0);
 
   function renderItems(arr: heroData[]) {
     const items = arr.map((item) => {
       return (
         <li
-          className="hero__item"
+          className={`hero__item hero__item_${context.theme}`}
           key={item.name}
-          onClick={() => {
-            navigate(`details/id:${item.id}`);
+          onClick={(event: BaseSyntheticEvent) => {
+            if (event.target.className !== 'checkbox') {
+              navigate(`details/id:${item.id}`);
+            }
           }}
         >
+          <input
+            type="checkbox"
+            className="checkbox"
+            name="tabs"
+            onClick={(e: BaseSyntheticEvent) => {
+              if (e.target.checked) {
+                setIsFlyout(true);
+                setSelectedItems(() => selectedItems + 1);
+              } else {
+                setSelectedItems(() => selectedItems - 1);
+              }
+            }}
+          />
           <img src={item.img} alt={item.name} />
           <div className="hero__name">{item.name}</div>
           <div className="hero__descr">{item.description}</div>
@@ -90,10 +68,11 @@ const HeroesList = (props: HeroesListProps) => {
     return items.length !== 0 ? items : <h3>There is no hero with such name</h3>;
   }
 
-  const items = renderItems(heroesList);
-  const spinner = loading ? <Spinner /> : null;
-  const content = loading ? null : items;
-  const errorMessage = error ? <ErrorMessage /> : null;
+  const items = renderItems(props.heroesList.length ? props.heroesList : getTransformedData(data).heroesList);
+  const spinner = isLoading || isFetching ? <Spinner /> : null;
+  const content = isLoading || isFetching ? null : items;
+  const errorMessage = isError ? <ErrorMessage /> : null;
+  const flyout = isFlyout ? <Flyout selectedItems={selectedItems} /> : null;
 
   return (
     <>
@@ -104,10 +83,10 @@ const HeroesList = (props: HeroesListProps) => {
         <Outlet />
       </section>
       <Pagination
-        heroesPerPage={heroesPerPage}
-        totalHeroes={totalHeroes ? totalHeroes : props.totalHeroes}
-        onChangePage={() => getHeroesList(location.search.slice(1))}
+        totalHeroes={props.totalHeroes ? props.totalHeroes : getTransformedData(data).totalHeroes}
+        onChangePage={changePage}
       />
+      {flyout}
     </>
   );
 };

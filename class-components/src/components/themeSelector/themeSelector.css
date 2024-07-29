@@ -1,0 +1,42 @@
+.themeTabs {
+  display: flex;
+	position: relative;
+	background-color: rgb(0, 0, 0, .9);
+	box-shadow: 0 0 1px 0 rgba(#185ee0, 0.15), 0 6px 12px 0 rgba(#185ee0, 0.15);
+	border-radius: 99px;
+  margin: 10px;
+  z-index: 10;
+}
+
+.tab {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 30px;
+	width: 50px;
+	font-size: 14px;
+  color: white;
+	border-radius: 99px;
+	cursor: pointer;
+	transition: color 0.15s ease-in;
+  z-index: 1;
+}
+
+input[type="radio"] {
+	display: none;
+}
+
+input[id="radio-2"]:checked ~ .glider{
+  transform: translateX(100%);
+}
+
+.glider {
+	position: absolute;
+	display: flex;
+	height: 30px;
+	width: 50px;
+	background-color: rgb(255, 0, 0);
+	z-index: 0;
+	border-radius: 99px; 
+	transition: 0.25s ease-out;
+}
